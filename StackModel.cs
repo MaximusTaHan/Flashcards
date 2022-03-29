@@ -8,18 +8,7 @@ namespace Flashcards
 {
     internal class StackModel
     {
-        private int _stackId;
-        private string _stackName;
-
-        public int StackId
-        {
-            get { return _stackId; }
-            set { _stackId = value; }
-        }
-        public string StackName
-        {
-            get { return _stackName; }
-            set { _stackName = value; }
-        }
+        public int StackId { get; set; }
+        public string StackName { get; set; }
     }
 }

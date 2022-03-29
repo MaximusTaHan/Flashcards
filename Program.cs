@@ -7,7 +7,6 @@ class Program
     static string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
     static void Main(String[] args)
     {
-
         StackInitializer stackInitializer = new();
         GetUserInput getUserInput = new();
 
