@@ -104,8 +104,18 @@ internal class GetUserInput
     private void ProcessPost()
     {
         string name = GetNameInput();
+        var stackModel = stackController.Get();
 
-        stackController.Post(name);
+        var stack = TryPostName(name, stackModel);
+        if(name == stack.StackName)
+        {
+            Console.WriteLine("Stack with that Name already exists");
+            ProcessPost();
+        }
+        else
+        {
+            stackController.Post(name);
+        }
     }
 
 
@@ -120,6 +130,8 @@ internal class GetUserInput
         Console.WriteLine($"You chose: {name}. \nPress 1 to confirm.\nPress any key to Write a new name (press 0 to return to Main Menu).");
         string check = Console.ReadLine();
 
+
+
         if (check == "1")
             return name;
 
@@ -130,6 +142,24 @@ internal class GetUserInput
             GetNameInput();
 
         return name;
+    }
+
+    private TableToStackContextDTO TryPostName(string? nameInput, List<TableToStackContextDTO> stackModel)
+    {
+        if (nameInput == "0")
+            MainMenu();
+
+        TableToStackContextDTO foundStack = new();
+
+        foreach (var stack in stackModel)
+        {
+            if (stack.StackName == nameInput)
+            {
+                foundStack = stack;
+            }
+        }
+        // should never be reached
+        return foundStack;
     }
 
     private TableToStackContextDTO TryFindName(string? nameInput, List<TableToStackContextDTO> stackModel)
