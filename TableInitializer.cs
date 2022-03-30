@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Data.SqlClient;
 
-internal class StackInitializer
+internal class TableInitializer
 {
     internal void CreateTable(string connectionString)
     {
@@ -23,9 +23,11 @@ internal class StackInitializer
             @"
             IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Cards' and xtype='U')
                 CREATE TABLE Cards (
-                CardsID int,
+                CardsID int IDENTITY(1,1),
                 CardsName text,
                 StacksID int FOREIGN KEY REFERENCES Stacks(StacksID)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
              )";
 
         command.ExecuteNonQuery();

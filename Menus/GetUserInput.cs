@@ -19,11 +19,11 @@ internal class GetUserInput
             Console.WriteLine("Type 3 to Delete a Stack.");
             Console.WriteLine("Type 4 to Update a Stack.");
 
-            string commandInput = Console.ReadLine();
+            string? commandInput = Console.ReadLine();
 
             while(string.IsNullOrEmpty(commandInput))
             {
-                Console.WriteLine("\nInvalid Command. Please type a number from 0 to 5.\n");
+                Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
                 commandInput = Console.ReadLine();
             }
 
@@ -34,8 +34,7 @@ internal class GetUserInput
                     Environment.Exit(0);
                     break;
                 case "1":
-                    var stackTable = stackController.Get();
-                    TableVisualisation.ShowTable(stackTable);
+                    ProcessIntoStack();
                     break;
                 case "2":
                     ProcessPost();
@@ -49,6 +48,22 @@ internal class GetUserInput
 
             }
         }
+    }
+
+    private void ProcessIntoStack()
+    {
+        var stackTable = stackController.Get();
+        TableVisualisation.ShowTable(stackTable);
+
+        Console.WriteLine("\nPlease type name of Stack you want to Go Into (or 0 to return to Main Menu).");
+
+        string nameInput = Console.ReadLine();
+
+        var stack = TryFindName(nameInput, stackTable);
+        
+        SetTableContext.TableContext = stack;
+        CardMenu cardMenu = new();
+        cardMenu.CardMainMenu();
     }
 
     private void ProcessUpdate()
@@ -74,15 +89,14 @@ internal class GetUserInput
 
     private void ProcessDelete()
     {
-        var stackModel = stackController.Get();
+        var stackDTO = stackController.Get();
 
-        bool found = false;
-        TableVisualisation.ShowTable(stackModel);
+        TableVisualisation.ShowTable(stackDTO);
         Console.WriteLine("\nPlease type name of Stack you want to Delete (or 0 to return to Main Menu).");
 
         string nameInput = Console.ReadLine();
 
-        var stack = TryFindName(nameInput, stackModel);
+        var stack = TryFindName(nameInput, stackDTO);
 
         stackController.Delete(stack);
     }
@@ -94,6 +108,8 @@ internal class GetUserInput
         stackController.Post(name);
     }
 
+
+    // Currently a stack with the same name can be added to the DB. Deleting/Updating a Stack with the same name would Delete/Update the first one created.
     private string GetNameInput()
     {
         string name;
@@ -116,13 +132,13 @@ internal class GetUserInput
         return name;
     }
 
-    private StackModel TryFindName(string? nameInput, List<StackModel> stackModel)
+    private TableToStackContextDTO TryFindName(string? nameInput, List<TableToStackContextDTO> stackModel)
     {
         bool found = false;
         if (nameInput == "0")
             MainMenu();
 
-        StackModel foundStack = new();
+        TableToStackContextDTO foundStack = new();
         while (found == false)
         {
             foreach (var stack in stackModel)
@@ -135,7 +151,7 @@ internal class GetUserInput
             }
             if (found == false)
             {
-                Console.WriteLine("\nCould not find a Stack with that name.\nPress 0 to return to Main Menu.\nTry Again: ");
+                Console.WriteLine("\nCould not find a Stack with that name.\nPress 0 to return to Main Menu.\n\nTry Again: ");
                 nameInput = Console.ReadLine();
 
                 if (nameInput == "0")

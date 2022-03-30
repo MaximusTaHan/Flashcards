@@ -6,9 +6,9 @@ using System.Data.SqlClient;
 internal class StackController
 {
     static string connectionString = ConfigurationManager.AppSettings.Get("ConnectionString");
-    internal List<StackModel> Get()
+    internal List<TableToStackContextDTO> Get()
     {
-        var stackTable = new List<StackModel>();
+        var stackTable = new List<TableToStackContextDTO>();
 
         using var connection = new SqlConnection(connectionString);
         using var command = connection.CreateCommand();
@@ -22,10 +22,10 @@ internal class StackController
             while(reader.Read())
             {
                 stackTable.Add(
-                new StackModel
+                new TableToStackContextDTO
                 {
-                    StackId = reader.GetInt32(0),
-                    StackName = reader.GetString(1),
+                    StackID = reader.GetInt32(0),
+                    StackName = reader.GetString(1)
                 });
             }
         }
@@ -48,19 +48,19 @@ internal class StackController
         command.ExecuteNonQuery();
     }
 
-    internal void Delete(StackModel stack)
+    internal void Delete(TableToStackContextDTO stack)
     {
         using var connection = new SqlConnection(connectionString);
         using var command = connection.CreateCommand();
 
         connection.Open();
-        command.CommandText = $"DELETE from Stacks WHERE StacksID ='{stack.StackId}'";
+        command.CommandText = $"DELETE from Stacks WHERE CONVERT(NVARCHAR, StacksName)='{stack.StackName}'";
         command.ExecuteNonQuery();
 
         Console.WriteLine($"\nThe '{stack.StackName}' Stack has been Deleted");
     }
 
-    internal void Update(string newName, StackModel stack)
+    internal void Update(string newName, TableToStackContextDTO stack)
     {
         using var connection = new SqlConnection(connectionString);
         using var command = connection.CreateCommand();
@@ -71,7 +71,8 @@ internal class StackController
                 SET
                     StacksName = '{newName}'
                 WHERE
-                    StacksID = {stack.StackId}
+                CONVERT
+                    (NVARCHAR, StacksName) = '{stack.StackName}'
             ";
         command.ExecuteNonQuery();
 
