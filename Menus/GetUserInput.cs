@@ -18,6 +18,7 @@ internal class GetUserInput
             Console.WriteLine("Type 2 to Create a Stack.");
             Console.WriteLine("Type 3 to Delete a Stack.");
             Console.WriteLine("Type 4 to Update a Stack.");
+            Console.WriteLine("\nType 5 to Go to Study Area");
 
             string? commandInput = Console.ReadLine();
 
@@ -45,7 +46,10 @@ internal class GetUserInput
                 case "4":
                     ProcessUpdate();
                     break;
-
+                case "5":
+                    StudyArea studyArea = new();
+                    studyArea.StudyMenu();
+                    break;
             }
         }
     }

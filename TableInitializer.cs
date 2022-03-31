@@ -31,5 +31,22 @@ internal class TableInitializer
              )";
 
         command.ExecuteNonQuery();
+
+        command.CommandText =
+            @"
+            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Scores' and xtype='U')
+                CREATE TABLE Scores (
+                ScoresID int IDENTITY(1,1),
+                stack_name VARCHAR(10),
+                score INT,
+                date DATE,
+                start_time TIME,
+                end_time TIME,
+                StacksID int FOREIGN KEY REFERENCES Stacks(StacksID)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+             )";
+
+        command.ExecuteNonQuery();
     }
 }
