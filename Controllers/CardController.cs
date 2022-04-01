@@ -15,8 +15,9 @@ internal class CardController
         using var command = connection.CreateCommand();
 
         connection.Open();
-        command.CommandText = $"SELECT * FROM Cards WHERE StacksID ='{currentStack.StackID}'";
+        command.CommandText = "SELECT * FROM Cards WHERE StacksID = @currentStack";
 
+        command.Parameters.AddWithValue("@currentStack", currentStack.StackID);
         using var reader = command.ExecuteReader();
         if(reader.HasRows)
         {
@@ -43,7 +44,10 @@ internal class CardController
         using var command = connection.CreateCommand();
 
         connection.Open();
-        command.CommandText = $"INSERT INTO Cards (CardsName, StacksID) VALUES ('{name}', {currentStack.StackID})";
+        command.CommandText = "INSERT INTO Cards (CardsName, StacksID) VALUES (@name, @currentStack)";
+
+        command.Parameters.AddWithValue("@name", name);
+        command.Parameters.AddWithValue("@currentStack", currentStack.StackID);
 
         command.ExecuteNonQuery();
     }
@@ -54,7 +58,9 @@ internal class CardController
         using var command = connection.CreateCommand();
 
         connection.Open();
-        command.CommandText = $"DELETE from Cards WHERE CONVERT(NVARCHAR, CardsName)='{card.CardsName}'";
+        command.CommandText = "DELETE from Cards WHERE CONVERT(NVARCHAR, CardsName)=@cards";
+
+        command.Parameters.AddWithValue("@cards", card.CardsName);
         command.ExecuteNonQuery();
 
         Console.WriteLine($"\nThe '{card.CardsName}' Card has been Deleted");
@@ -67,13 +73,17 @@ internal class CardController
 
         connection.Open();
         command.CommandText =
-            $@"UPDATE Cards
+            @"UPDATE Cards
                 SET
-                    CardsName = '{newName}'
+                    CardsName = @newName
                 WHERE
                 CONVERT
-                    (NVARCHAR, CardsName) = '{card.CardsName}'
+                    (NVARCHAR, CardsName) = @cardsName
             ";
+
+        command.Parameters.AddWithValue("@newName", newName);
+        command.Parameters.AddWithValue("@cardsName", card.CardsName);
+
         command.ExecuteNonQuery();
 
         Console.WriteLine($"\nThe '{card.CardsName}' Card has been Update to: '{newName}'");

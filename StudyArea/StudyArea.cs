@@ -21,6 +21,7 @@ internal class StudyArea
             Console.WriteLine("Type 1 to Choose a Stack");
             Console.WriteLine("Type 2 to Display all Scores");
             Console.WriteLine("Type 3 to Delete a chosen Scores");
+            Console.WriteLine("Type 4 to Display number of Attempts per month");
 
             Console.WriteLine("\nThe Score of your study will be saved to the corresponding Stack");
 
@@ -45,13 +46,22 @@ internal class StudyArea
                     ProcessScoresGet();
                     break;
                 case "3":
-                    ProccessScoresDelete();
+                    ProcessScoresDelete();
+                    break;
+                case "4":
+                    ProcessSessionHistory();
                     break;
             }    
         }
     }
 
-    private void ProccessScoresDelete()
+    private void ProcessSessionHistory()
+    {
+        var scoresListDTO = scoreController.GetSessionHistory();
+        TableVisualisation.ShowTable(scoresListDTO);
+    }
+
+    private void ProcessScoresDelete()
     {
         var scoresListDTO = scoreController.GetScores();
         TableVisualisation.ShowTable(scoresListDTO);

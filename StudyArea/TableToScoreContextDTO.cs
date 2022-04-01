@@ -10,7 +10,7 @@ namespace Flashcards.StudyArea
     {
         public int ScoresID { get; set; }
         public string StackName { get; set; }
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public TimeSpan StartTime { get; set; }
 
         public TimeSpan EndTime { get; set; }

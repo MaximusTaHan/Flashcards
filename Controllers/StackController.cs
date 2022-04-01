@@ -43,7 +43,9 @@ internal class StackController
         using var command = connection.CreateCommand();
 
         connection.Open();
-        command.CommandText = $"INSERT INTO Stacks (StacksName) Values ('{name}')";
+        command.CommandText = "INSERT INTO Stacks (StacksName) Values (@name)";
+
+        command.Parameters.AddWithValue("@name", name);
 
         command.ExecuteNonQuery();
     }
@@ -54,7 +56,10 @@ internal class StackController
         using var command = connection.CreateCommand();
 
         connection.Open();
-        command.CommandText = $"DELETE from Stacks WHERE CONVERT(NVARCHAR, StacksName)='{stack.StackName}'";
+        command.CommandText = "DELETE from Stacks WHERE CONVERT(NVARCHAR, StacksName)=@stackName";
+
+        command.Parameters.AddWithValue("@stackName", stack.StackName);
+
         command.ExecuteNonQuery();
 
         Console.WriteLine($"\nThe '{stack.StackName}' Stack has been Deleted");
@@ -67,13 +72,17 @@ internal class StackController
 
         connection.Open();
         command.CommandText = 
-            $@"UPDATE Stacks
+            @"UPDATE Stacks
                 SET
-                    StacksName = '{newName}'
+                    StacksName = @newName
                 WHERE
                 CONVERT
-                    (NVARCHAR, StacksName) = '{stack.StackName}'
+                    (NVARCHAR, StacksName) = @stackName
             ";
+
+        command.Parameters.AddWithValue("@newName", newName);
+        command.Parameters.AddWithValue("@stackName", stack.StackName);
+
         command.ExecuteNonQuery();
 
         Console.WriteLine($"\nThe '{stack.StackName}' Stack has been Update to: {newName}");
